@@ -5,6 +5,7 @@ if TYPE_CHECKING:
 
 from src.sprites.player import Player
 from src.core.scene import Scene
+import src.assets as assets
 
 import pygame
 
@@ -19,4 +20,5 @@ class MainScene(Scene):
 
     def draw(self, screen: pygame.Surface) -> None:
         screen.fill((50, 50, 50))
+        screen.blit(assets.test, (0, 0))
         self.sprite_manager.draw(screen)
