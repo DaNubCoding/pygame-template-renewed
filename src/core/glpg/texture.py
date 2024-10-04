@@ -88,24 +88,6 @@ class Texture:
         texture.move(pos)
         texture.vao.render()
 
-    def fill(self, color: ColorType, rect: Optional[RectType] = None) -> None:
-        """Fill the entire Texture or parts of the Texture with a given
-        color.
-
-        Args:
-            color: The color value to fill the Texture with.
-            rect: The area of the texture to fill. Defaults to the whole
-                Texture.
-        """
-        color = color[::-1] + (255,) if len(color) == 3 else color[2::-1] + (color[-1],)
-        if rect:
-            rect = list(inttup(rect))
-            rect[1] = int(self.size.y - rect[1] - rect[3])
-        else:
-            rect = [0, 0, *inttup(self.size)]
-        data = bytes(color * rect[2] * rect[3])
-        self.texture.write(data, tuple(rect))
-
     def update(self, src: pygame.Surface) -> None:
         """Update the Texture with a new source.
 
