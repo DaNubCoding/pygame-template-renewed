@@ -5,16 +5,38 @@ if TYPE_CHECKING:
     from src.core.scene import Scene
 
 from abc import ABC as AbstractClass, abstractmethod
+from src.utils import Vec
 from typing import Self
 from uuid import uuid4
 import pygame
 
-class Sprite(AbstractClass):
+class HeadlessSprite(AbstractClass):
     def __init__(self, scene: Scene, layer: Layer) -> None:
         self.uuid = uuid4()
         self.scene = scene
         self.layer = layer
+        self.pos = Vec(0, 0)
 
+    @abstractmethod
+    def update(self, dt: float) -> None:
+        pass
+
+    def bind(self, sprite: Self) -> None:
+        self.scene.sprite_manager.layers[self.layer].bind(sprite, self)
+
+    def remove(self) -> None:
+        self.scene.sprite_manager.remove(self)
+
+    def __hash__(self) -> int:
+        return hash(self.uuid)
+
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}{{{self.uuid}}}"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+class Sprite(HeadlessSprite):
     @abstractmethod
     def update(self, dt: float) -> None:
         pass
@@ -22,12 +44,3 @@ class Sprite(AbstractClass):
     @abstractmethod
     def draw(self, screen: pygame.Surface) -> None:
         pass
-
-    def bind(self, sprite: Self) -> None:
-        self.scene.sprite_manager.layers[self.layer].bind(sprite, self)
-
-    def __hash__(self) -> int:
-        return hash(self.uuid)
-
-    def __str__(self) -> str:
-        return f"{self.__class__.__name__}{{{self.uuid}}}"

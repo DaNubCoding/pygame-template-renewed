@@ -114,4 +114,4 @@ class Texture:
         """
         self.surf = src
         self.size = Vec(self.surf.get_size())
-        self.texture.write(pygame.image.tostring(self.surf, "BGRA", True))
+        self.texture.write(pygame.image.tobytes(self.surf, "BGRA", True))
