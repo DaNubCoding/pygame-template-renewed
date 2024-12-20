@@ -3,6 +3,7 @@ from multimethod import multimeta
 from pygame.math import Vector2
 from datetime import datetime
 from functools import wraps
+from numbers import Number
 from pathlib import Path
 from math import floor
 import tomllib
@@ -35,7 +36,7 @@ def read_file(path: str) -> str:
     with open(path, "r") as file:
         return file.read()
 
-def inttup(tup: tuple[float, float]) -> tuple:
+def inttup(tup: tuple[Number, Number]) -> tuple:
     """Convert a tuple of 2 floats to a tuple of 2 ints.
 
     Args:
@@ -47,6 +48,11 @@ def inttup(tup: tuple[float, float]) -> tuple:
     return (floor(tup[0]), floor(tup[1]))
 
 class Vec(Vector2, metaclass=multimeta):
+    """A simple wrapper around the pygame.math.Vector2 class that mainly makes
+    normalizing and clamping a zero vector return a zero vector instead of
+    raising a ValueError.
+    """
+
     def normalize(self) -> Self:
         try:
             return super().normalize()
@@ -57,27 +63,27 @@ class Vec(Vector2, metaclass=multimeta):
         try:
             return super().normalize_ip()
         except ValueError:
-            pass
+            self.update(0, 0)
 
-    def clamp_magnitude(self, max_length: float) -> Self:
+    def clamp_magnitude(self, max_length: Number) -> Self:
         try:
             return super().clamp_magnitude(max_length)
         except ValueError:
             return Vec(0, 0)
 
-    def clamp_magnitude(self, min_length: float, max_length: float) -> Self:
+    def clamp_magnitude(self, min_length: Number, max_length: Number) -> Self:
         try:
             return super().clamp_magnitude(min_length, max_length)
         except ValueError:
             return Vec(0, 0)
 
-    def clamp_magnitude_ip(self, max_length: float) -> None:
+    def clamp_magnitude_ip(self, max_length: Number) -> None:
         try:
             return super().clamp_magnitude_ip(max_length)
         except ValueError:
             pass
 
-    def clamp_magnitude_ip(self, min_length: float, max_length: float) -> None:
+    def clamp_magnitude_ip(self, min_length: Number, max_length: Number) -> None:
         try:
             return super().clamp_magnitude_ip(min_length, max_length)
         except ValueError:
