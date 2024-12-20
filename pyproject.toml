@@ -1,0 +1,12 @@
+[tool.poetry]
+package-mode = false
+name = "pygame-template-renewed"
+description = "Pygame template."
+authors = ["DaNubCoding <danubcoding@gmail.com>"]
+license = "GPL"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pygame-ce = "^2.5.2"
+multimethod = "^1.12"

@@ -3,7 +3,7 @@ from src.exe import pathof
 import pygame
 
 def load_image(file: str, scale: int = 1) -> pygame.SurfaceType:
-    return pygame.transform.scale_by(pygame.image.load(pathof(f"assets/images/{file}")).convert_alpha(), scale)
+    return pygame.transform.scale_by(pygame.image.load(pathof(f"res/images/{file}")).convert_alpha(), scale)
 
 class SpriteSheet(list):
     def __init__(self, path: str, height: int, scale: int = 1) -> None:
