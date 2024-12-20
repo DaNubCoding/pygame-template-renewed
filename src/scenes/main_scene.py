@@ -6,7 +6,7 @@ if TYPE_CHECKING:
 from src.sprites.player import Player
 from src.core.scene import Scene
 import src.assets as assets
-from src.utils import Debug
+from src.util import *
 
 import pygame
 

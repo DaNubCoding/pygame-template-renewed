@@ -1,7 +1,7 @@
 from src.scenes.main_scene import MainScene
 from src.core.scene import Scene
 from pygame.locals import *
-from src.utils import *
+from src.util import *
 import pygame
 
 class AbortScene(Exception):

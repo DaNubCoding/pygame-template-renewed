@@ -1,0 +1,47 @@
+from datetime import datetime
+from src.util import Debug
+
+class Log:
+    """A simple logging class that can be used to log messages to the console.
+
+    The class has four logging methods: `debug`, `info`, `warn`, and `error`.
+    Each method takes a single argument, the message to log. The message will
+    be prefixed with the type of message and the current time.
+
+
+    """
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+    @staticmethod
+    @Debug.requires_debug("debug")
+    def debug(message: str) -> None:
+        dt = datetime.now().strftime("%H:%M:%S.%f")
+        print(f"[DEBUG {Log.UNDERLINE}{dt}{Log.ENDC}] {message}")
+
+    @staticmethod
+    @Debug.requires_debug("info")
+    def info(message: str) -> None:
+        dt = datetime.now().strftime("%H:%M:%S.%f")
+        print(f"[{Log.OKGREEN}INFO{Log.ENDC} {Log.UNDERLINE}{dt}{Log.ENDC}] {message}")
+
+    @staticmethod
+    @Debug.requires_debug("warn")
+    def warn(message: str) -> None:
+        dt = datetime.now().strftime("%H:%M:%S.%f")
+        print(f"[{Log.WARNING}WARNING{Log.ENDC} {Log.UNDERLINE}{dt}{Log.ENDC}] {message}")
+
+    @staticmethod
+    @Debug.requires_debug("error")
+    def error(message: str) -> None:
+        dt = datetime.now().strftime("%H:%M:%S.%f")
+        print(f"[{Log.BOLD}{Log.FAIL}CRITICAL{Log.ENDC} {Log.UNDERLINE}{dt}{Log.ENDC}] {message}")
+
+__all__ = ["Log"]

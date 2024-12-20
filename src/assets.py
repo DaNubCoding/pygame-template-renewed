@@ -1,4 +1,4 @@
-from src.utils import pathof
+from src.util import pathof
 
 import pygame
 
