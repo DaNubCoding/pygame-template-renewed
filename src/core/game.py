@@ -42,9 +42,13 @@ class Game:
 
     def update(self) -> None:
         self.events = {event.type: event for event in pygame.event.get()}
+        self.key_down: int = self.events.get(KEYDOWN).key if KEYDOWN in self.events else -1
+        self.key_up: int = self.events.get(KEYUP).key if KEYUP in self.events else -1
 
         if QUIT in self.events:
             raise AbortGame
+
+        Profiler.update(self.key_down)
 
     def change_scene(self, scene: Scene) -> None:
         self.scene = scene
