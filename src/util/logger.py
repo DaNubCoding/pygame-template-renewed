@@ -8,7 +8,8 @@ class Log:
     Each method takes a single argument, the message to log. The message will
     be prefixed with the type of message and the current time.
 
-
+    Each method will only log if the corresponding debug type is enabled in the
+    `debug.toml` file. If the file does not exist, the methods will not run.
     """
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -23,25 +24,25 @@ class Log:
     @staticmethod
     @Debug.requires_debug("debug")
     def debug(message: str) -> None:
-        dt = datetime.now().strftime("%H:%M:%S.%f")
-        print(f"[DEBUG {Log.UNDERLINE}{dt}{Log.ENDC}] {message}")
+        print(f"[DEBUG {Log.UNDERLINE}{Log.datetime()}{Log.ENDC}] {message}")
 
     @staticmethod
     @Debug.requires_debug("info")
     def info(message: str) -> None:
-        dt = datetime.now().strftime("%H:%M:%S.%f")
-        print(f"[{Log.OKGREEN}INFO{Log.ENDC} {Log.UNDERLINE}{dt}{Log.ENDC}] {message}")
+        print(f"[{Log.OKGREEN}INFO{Log.ENDC} {Log.UNDERLINE}{Log.datetime()}{Log.ENDC}] {message}")
 
     @staticmethod
     @Debug.requires_debug("warn")
     def warn(message: str) -> None:
-        dt = datetime.now().strftime("%H:%M:%S.%f")
-        print(f"[{Log.WARNING}WARNING{Log.ENDC} {Log.UNDERLINE}{dt}{Log.ENDC}] {message}")
+        print(f"[{Log.WARNING}WARNING{Log.ENDC} {Log.UNDERLINE}{Log.datetime()}{Log.ENDC}] {message}")
 
     @staticmethod
     @Debug.requires_debug("error")
     def error(message: str) -> None:
-        dt = datetime.now().strftime("%H:%M:%S.%f")
-        print(f"[{Log.BOLD}{Log.FAIL}CRITICAL{Log.ENDC} {Log.UNDERLINE}{dt}{Log.ENDC}] {message}")
+        print(f"[{Log.BOLD}{Log.FAIL}CRITICAL{Log.ENDC} {Log.UNDERLINE}{Log.datetime()}{Log.ENDC}] {message}")
+
+    @staticmethod
+    def datetime() -> str:
+        return datetime.now().strftime("%H:%M:%S.%f")
 
 __all__ = ["Log"]
