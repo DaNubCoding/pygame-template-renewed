@@ -32,6 +32,7 @@ class Game:
                 break
 
             self.scene.draw(self.screen)
+            Debug.draw(self)
             pygame.display.flip()
 
             pygame.display.set_caption(f"FPS: {self.clock.get_fps():.0f}")
