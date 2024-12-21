@@ -4,7 +4,6 @@ if TYPE_CHECKING:
     from src.core.game import Game
 
 from typing import Any, Callable
-from datetime import datetime
 from functools import wraps
 import tomllib
 import pygame
