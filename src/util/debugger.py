@@ -18,6 +18,16 @@ class Debug:
     given debug type is enabled. If the file does not exist, the debug type
     will be disabled. If a list of entries is provided in the file, the class
     will evaluate them and display the results on the screen.
+
+    Initial formatting of the `debug.toml` file should look like this:
+    ```toml
+    debug = true
+    info = true
+    warn = true
+    error = true
+
+    [entries]
+    # Name = "source"
     """
 
     @staticmethod
