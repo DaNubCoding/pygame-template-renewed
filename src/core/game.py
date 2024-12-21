@@ -25,7 +25,8 @@ class Game:
         while True:
             try:
                 self.update()
-                self.scene.update(self.dt)
+                if not Debug.paused():
+                    self.scene.update(self.dt)
             except AbortScene:
                 continue
             except AbortGame:
@@ -48,6 +49,13 @@ class Game:
 
         if QUIT in self.events:
             raise AbortGame
+
+        if KEYDOWN in self.events and Debug.on():
+            match self.events[KEYDOWN].key:
+                case pygame.K_F1:
+                    Debug.toggle_paused()
+                case pygame.K_F3:
+                    Debug.toggle_visibility()
 
         Profiler.update(self.key_down)
 

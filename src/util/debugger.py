@@ -79,10 +79,26 @@ class Debug:
 
     _debug_entries = {}
     _debug_font = None
+    _visible = True
+    _paused = False
+
+    @staticmethod
+    def toggle_visibility() -> None:
+        Debug._visible = not Debug._visible
+
+    @staticmethod
+    def toggle_paused() -> None:
+        Debug._paused = not Debug._paused
+
+    @staticmethod
+    def paused() -> bool:
+        return Debug._paused
 
     @staticmethod
     @requires_debug()
     def draw(game: Game) -> None:
+        if not Debug._visible: return
+
         Debug._debug_entries = Debug.get_debug_item("entries")
         if Debug._debug_entries is None: return
 
