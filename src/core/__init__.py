@@ -1,4 +1,5 @@
-from .render_layer import Layer
+from src.game.settings import *
+
 from .sprite import Sprite
 from .assets import Images
 from .scene import Scene

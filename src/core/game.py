@@ -1,6 +1,7 @@
 from pygame.locals import SCALED, FULLSCREEN, KEYDOWN, KEYUP, QUIT
-from src.game.scenes.main_scene import MainScene
 from src.core.scene import Scene
+from src.game.settings import *
+from src.game.scenes import *
 from src.core.util import *
 from typing import cast
 import pygame
@@ -16,7 +17,7 @@ class AbortGame(Exception):
 class Game:
     def __init__(self) -> None:
         pygame.init()
-        self.size = self.width, self.height = self.w, self.h = 960, 540
+        self.size = self.width, self.height = self.w, self.h = WIDTH, HEIGHT
         self.screen = pygame.display.set_mode(self.size, SCALED | FULLSCREEN * (not Debug.on()))
         self.clock = pygame.time.Clock()
 

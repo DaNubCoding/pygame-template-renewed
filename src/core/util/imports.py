@@ -2,5 +2,6 @@ from math import sqrt, sin, cos, tan, asin, acos, atan, atan2, degrees, radians,
 from random import random, randint, uniform, choice, shuffle, seed, randrange, sample, triangular, betavariate, expovariate, gammavariate, gauss, lognormvariate, normalvariate, vonmisesvariate, paretovariate, weibullvariate, getrandbits, randbytes
 from os import system, name, chdir, getcwd, listdir, mkdir, remove, rename, rmdir, walk
 from time import time, sleep
+from enum import Enum, auto
 from pygame.locals import * # type: ignore
 import pygame

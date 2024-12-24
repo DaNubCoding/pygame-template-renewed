@@ -58,9 +58,3 @@ class RenderLayer:
 
     def __len__(self) -> int:
         return len(self.updating_sprites) + len(self.bound_sprites)
-
-
-class Layer(Enum):
-    BACKGROUND = auto()
-    DEFAULT = auto()
-    HUD = auto()
