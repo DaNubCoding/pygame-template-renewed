@@ -19,6 +19,7 @@ class Game:
         pygame.init()
         self.size = self.width, self.height = self.w, self.h = WIDTH, HEIGHT
         self.screen = pygame.display.set_mode(self.size, SCALED | FULLSCREEN * (not Debug.on()))
+        pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
 
         self.dt = self.clock.tick(0) / 1000
@@ -38,8 +39,6 @@ class Game:
             self.scene.draw(self.screen)
             Debug.draw(self)
             pygame.display.flip()
-
-            pygame.display.set_caption(f"FPS: {self.clock.get_fps():.0f}")
 
             self.dt = self.clock.tick(0) / 1000
 
