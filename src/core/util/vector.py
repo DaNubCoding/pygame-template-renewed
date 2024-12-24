@@ -1,7 +1,7 @@
+from __future__ import annotations
 from multimethod import multimeta
 from pygame.math import Vector2
-from src.util.typing import *
-from numbers import Number
+from src.core.util.typing import *
 from typing import Self
 from math import floor
 
@@ -18,7 +18,7 @@ class Vec(Vector2, metaclass=multimeta):
         return (floor(self.x), floor(self.y))
 
     @property
-    def ivec(self) -> Self:
+    def ivec(self) -> Vec:
         """Return the vector as a vector of ints.
 
         This uses the `Vec.itup` property to convert the components to ints.
@@ -66,7 +66,7 @@ class Vec(Vector2, metaclass=multimeta):
         return f"{itup[0]},{itup[1]}"
 
     @staticmethod
-    def from_concise(concise: str) -> Self:
+    def from_concise(concise: str) -> Vec:
         """Create a vector from a concise string.
 
         This is the inverse of the `Vec.concise` property.
@@ -86,7 +86,7 @@ class Vec(Vector2, metaclass=multimeta):
             raise ValueError(f"Invalid concise string: {concise}")
         return Vec(float(x), float(y))
 
-    def normalize(self) -> Self:
+    def normalize(self) -> Vec:
         """Return a normalized vector.
 
         This differs from the default `normalize` method by returning a zero
@@ -111,7 +111,7 @@ class Vec(Vector2, metaclass=multimeta):
         except ValueError:
             pass
 
-    def clamp_magnitude(self, max_length: Number) -> Self:
+    def clamp_magnitude(self, max_length: Number) -> Vec: # type: ignore
         """Return a vector with a magnitude clamped to a maximum length.
 
         This differs from the default `clamp_magnitude` method by returning a
@@ -128,7 +128,7 @@ class Vec(Vector2, metaclass=multimeta):
         except ValueError:
             return Vec(0, 0)
 
-    def clamp_magnitude(self, min_length: Number, max_length: Number) -> Self:
+    def clamp_magnitude(self, min_length: Number, max_length: Number) -> Vec: # type: ignore
         """Return a vector with a magnitude clamped to a range.
 
         This differs from the default `clamp_magnitude` method by returning a
@@ -146,7 +146,7 @@ class Vec(Vector2, metaclass=multimeta):
         except ValueError:
             return Vec(0, 0)
 
-    def clamp_magnitude_ip(self, max_length: Number) -> None:
+    def clamp_magnitude_ip(self, max_length: Number) -> None: # type: ignore
         """Clamp the magnitude of the vector to a maximum length in place.
 
         This differs from the default `clamp_magnitude_ip` method by not
@@ -160,7 +160,7 @@ class Vec(Vector2, metaclass=multimeta):
         except ValueError:
             pass
 
-    def clamp_magnitude_ip(self, min_length: Number, max_length: Number) -> None:
+    def clamp_magnitude_ip(self, min_length: Number, max_length: Number) -> None: # type: ignore
         """Clamp the magnitude of the vector to a range in place.
 
         This differs from the default `clamp_magnitude_ip` method by not
@@ -175,8 +175,23 @@ class Vec(Vector2, metaclass=multimeta):
         except ValueError:
             pass
 
-    def __hash__(self) -> int:
+    def __hash__(self) -> int: # type: ignore
         """Return the hash of the vector."""
         return tuple(self).__hash__()
+
+    def __getitem__(self, index: int) -> float: # type: ignore
+        """Return the component at the given index.
+
+        Args:
+            index: The index of the component.
+
+        Returns:
+            The component.
+        """
+        if index == 0:
+            return self.x
+        if index == 1:
+            return self.y
+        raise IndexError("Index out of range.")
 
 __all__ = ["Vec"]

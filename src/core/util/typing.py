@@ -5,7 +5,10 @@ from pygame.typing import (
     RectLike as Rect,
 )
 
+Number = int | float
+
 __all__ = [
+    "Number",
     "Coord",
     "IntCoord",
     "Color",

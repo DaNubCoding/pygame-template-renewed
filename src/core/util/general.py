@@ -1,10 +1,11 @@
-from typing import Iterable, TypeVar
-from src.util.vector import Vec
-from src.util.typing import *
+from __future__ import annotations
+
+from typing import Iterable, TypeVar, cast, Optional, Any, Type, Generic
+from src.core.util.vector import Vec
+from src.core.util.typing import *
 from pathlib import Path
 from math import floor
 import weakref
-import pygame
 import sys
 import os
 
@@ -27,9 +28,6 @@ def pathof(file: str) -> str:
         abspath = file
     return abspath
 
-# Technically the return type should be weakref.ProxyType[T], but that breaks
-# IntelliSense for attribute access on the proxy object, so we will pretend it
-# is just T :P
 def ref_proxy(obj: T) -> T:
     """Create a weak reference proxy to an object if it isn"t already one.
 
@@ -82,7 +80,7 @@ def iter_rect(left: int, right: int, top: int, bottom: int) -> Iterable[IntCoord
     """
     for x in range(int(left), int(right) + 1):
         for y in range(int(top), int(bottom) + 1):
-            yield Vec(x, y)
+            yield cast(IntCoord, Vec(x, y))
 
 def iter_square(size: int) -> Iterable[IntCoord]:
     """Iterate over the coordinates of a square.
@@ -95,6 +93,27 @@ def iter_square(size: int) -> Iterable[IntCoord]:
     """
     yield from iter_rect(0, size - 1, 0, size - 1)
 
+T = TypeVar("T")
+U = TypeVar("U")
+
+class StorageMeta(Generic[T, U], type):
+    """A metaclass that ensures a class is a singleton and redirects class
+    attribute access to the singleton instance. Effectively, this metaclass
+    makes the class a storage for a bunch of attributes that can be more easily
+    accessed without needing to manually instantiate the class.
+    """
+    _instance: Optional[T] = None
+
+    def __call__(cls: StorageMeta[T, U], *args: Any, **kwargs: Any) -> T:
+        if cls._instance is None:
+            cls._instance = super().__call__(*args, **kwargs)
+        return cast(T, cls._instance)
+
+    def __getattr__(cls: StorageMeta[T, U], name: str) -> U:
+        if cls._instance is None:
+            cls._instance = cls()
+        return getattr(cls._instance, name)
+
 __all__ = [
     "pathof",
     "ref_proxy",
@@ -102,4 +121,5 @@ __all__ = [
     "inttup",
     "iter_rect",
     "iter_square",
+    "StorageMeta"
 ]

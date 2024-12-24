@@ -1,5 +1,5 @@
 from datetime import datetime
-from src.util import Debug
+from src.core.util import Debug
 
 class Log:
     """A simple logging class that can be used to log messages to the console.

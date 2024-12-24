@@ -1,6 +1,5 @@
 from src.core.render_layer import RenderLayer, Layer
 from src.core.sprite import Sprite
-
 import pygame
 
 class SpriteManager:

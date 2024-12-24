@@ -1,17 +1,17 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from .game import Game
-
-from src.core.sprite_manager import SpriteManager
-from src.core.sprite import Sprite
+    from src.core.game import Game
 
 from abc import ABC as AbstractClass, abstractmethod
+from src.core.sprite_manager import SpriteManager
+from src.core.sprite import Sprite
+from src.core.util import *
 import pygame
 
 class Scene(AbstractClass):
     def __init__(self, game: Game) -> None:
-        self.game = game
+        self.game = ref_proxy(game)
         self.sprite_manager = SpriteManager()
 
     @abstractmethod
@@ -26,4 +26,7 @@ class Scene(AbstractClass):
         self.sprite_manager.add(sprite)
 
     def remove(self, sprite: Sprite) -> None:
-        self.sprite_manager.remove(sprite)
+        try:
+            self.sprite_manager.remove(sprite)
+        except ValueError:
+            Log.warn(f"Attempted to remove sprite {sprite} from scene {self}, but it was not found in the sprite manager.")

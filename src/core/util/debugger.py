@@ -31,7 +31,7 @@ class Debug:
 
     @staticmethod
     def on() -> bool:
-        return Debug.get_debug_config("debug")
+        return Debug.get_visibility("debug")
 
     @staticmethod
     def requires_debug(type: str = "debug") -> Callable[..., Any]:
@@ -55,19 +55,19 @@ class Debug:
                 print("This will only run if the 'warn' type is enabled.")
             ```
         """
-        def outer_wrapper(func: Callable[..., Any]) -> Callable[..., Any]:
+        def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
             @wraps(func)
-            def inner_wrapper(*args, **kwargs) -> Any:
-                if Debug.get_debug_config(type):
+            def wrapper(*args, **kwargs) -> Any:
+                if Debug.get_visibility(type):
                     return func(*args, **kwargs)
-            return inner_wrapper
-        return outer_wrapper
+            return wrapper
+        return decorator
 
     _conf_cache = None
     _conf_last_modified = None
 
     @staticmethod
-    def get_debug_item(name: str) -> Any:
+    def get_config_option(name: str) -> Any:
         try:
             last_modified = os.path.getmtime("debug.toml")
             # Only read the file if it has been modified since the last read
@@ -80,11 +80,15 @@ class Debug:
             return None
 
     @staticmethod
-    def get_debug_config(type: str) -> bool:
+    def get_visibility(type: str) -> bool:
         try:
-            return Debug.get_debug_item(type)
+            return Debug.get_config_option(type)
         except KeyError:
             return False
+
+    @staticmethod
+    def get_setting(name: str) -> Any:
+        return Debug.get_config_option("settings")[name]
 
     _debug_entries = {}
     _debug_font = None
@@ -108,7 +112,7 @@ class Debug:
     def draw(game: Game) -> None:
         if not Debug._visible: return
 
-        Debug._debug_entries = Debug.get_debug_item("entries")
+        Debug._debug_entries = Debug.get_config_option("entries")
         if Debug._debug_entries is None: return
 
         # Define locals

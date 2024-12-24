@@ -1,12 +1,9 @@
 from src.core.sprite import Sprite
-from typing import Callable
 from enum import Enum, auto
 import pygame
 
-
 class RenderLayer:
-    def __init__(self, key: Callable[[Sprite], int] = None) -> None:
-        self.key = key
+    def __init__(self) -> None:
         self.updating_sprites: list[Sprite] = []
         self.rendering_sprites: list[Sprite] = []
         self.bound_sprites: dict[Sprite, Sprite] = {}
@@ -16,9 +13,6 @@ class RenderLayer:
             sprite.update(dt)
 
     def draw(self, screen: pygame.Surface) -> None:
-        if self.key is not None:
-            self.rendering_sprites.sort(key=self.key)
-
         for sprite in self.rendering_sprites:
             self._draw_sprite(sprite, screen)
 

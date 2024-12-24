@@ -3,11 +3,10 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from src.core.game import Game
 
-from src.sprites.player import Player
+from src.game.sprites.player import Player
+from src.core.assets import Images
 from src.core.scene import Scene
-import src.assets as assets
-from src.util import *
-
+from src.core.util import *
 import pygame
 
 class MainScene(Scene):
@@ -21,5 +20,5 @@ class MainScene(Scene):
 
     def draw(self, screen: pygame.Surface) -> None:
         screen.fill((50, 50, 50))
-        self.game.screen.blit(assets.test, (0, 0))
+        screen.blit(Images.test, (0, 0))
         self.sprite_manager.draw(screen)
