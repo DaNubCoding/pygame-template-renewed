@@ -1,13 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from src.game.scenes.main_scene import MainScene
-
-from src.core.render_layer import Layer
-from src.core.sprite import Sprite
-from src.core.assets import Images
-from src.core.util import *
-import pygame
+from src.core import *
 
 class Player(Sprite):
     def __init__(self, scene: MainScene) -> None:

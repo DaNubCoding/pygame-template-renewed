@@ -10,3 +10,8 @@ readme = "README.md"
 python = "^3.12"
 pygame-ce = "^2.5.2"
 multimethod = "^1.12"
+
+[tool.poe.tasks]
+run = "python main.py"
+new-scene = "python scripts/create_scene.py"
+new-sprite = "python scripts/create_sprite.py"
