@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import Callable, Any
 import datetime
 import cProfile
@@ -6,7 +7,7 @@ import pygame
 import pstats
 import os
 
-class Profiler:
+class Profile:
     """A profiler that can be wrapped around functions to profile them.
 
     Attributes:
@@ -25,7 +26,7 @@ class Profiler:
 
     activated = False
     selected: list[int] = []
-    profilers: list[Profiler] = []
+    profilers: list[Profile] = []
     running = False
 
     @classmethod
@@ -42,11 +43,11 @@ class Profiler:
             key: The key that was pressed.
         """
         if key == pygame.K_F9:
-            Profiler.toggle()
-        elif pygame.K_1 <= key <= pygame.K_9 and Profiler.activated:
-            Profiler.select(key - pygame.K_0 - 1)
-        elif key == pygame.K_0 and Profiler.activated:
-            Profiler.clear()
+            Profile.toggle()
+        elif pygame.K_1 <= key <= pygame.K_9 and Profile.activated:
+            Profile.select(key - pygame.K_0 - 1)
+        elif key == pygame.K_0 and Profile.activated:
+            Profile.clear()
 
     @classmethod
     def toggle(cls) -> None:
@@ -58,12 +59,12 @@ class Profiler:
         cls.activated = not cls.activated
         if cls.activated:
             print("Profiler activated, please select profilers:")
-            for i, profiler in enumerate(Profiler.profilers):
+            for i, profiler in enumerate(Profile.profilers):
                 print(f"{i + 1}) {profiler.name} (Index: {i})")
             print("Press Backspace to clear selection")
             print("Press F9 again to start selected profilers")
         else:
-            print("Starting selected profilers:", Profiler.selected)
+            print("Starting selected profilers:", Profile.selected)
             cls.running = True
 
     @classmethod
@@ -73,30 +74,30 @@ class Profiler:
         Args:
             index: The index of the profiler to select or deselect.
         """
-        if not Profiler.activated:
+        if not Profile.activated:
             print("Profiler is not activated, cannot select profilers")
             return
 
-        if index >= len(Profiler.profilers):
-            max_index = len(Profiler.profilers) - 1
+        if index >= len(Profile.profilers):
+            max_index = len(Profile.profilers) - 1
             print(f"Profiler at index {index} does not exist, "
                   f"max index is {max_index}")
             return
 
-        profiler = Profiler.profilers[index]
+        profiler = Profile.profilers[index]
 
-        if index in Profiler.selected:
-            Profiler.selected.remove(index)
+        if index in Profile.selected:
+            Profile.selected.remove(index)
             print(f"Profiler at index {index} deselected: {profiler.name}")
             return
 
-        Profiler.selected.append(index)
+        Profile.selected.append(index)
         print(f"Profiler at index {index} selected: {profiler.name}")
 
     @classmethod
     def clear(cls) -> None:
         """Clear all selected profilers."""
-        Profiler.selected = []
+        Profile.selected = []
         print("All profilers deselected")
 
     def __init__(self, func: Callable, save: bool = True, print: bool = False) -> None:
@@ -104,9 +105,9 @@ class Profiler:
         self.name = func.__name__
         self.save = save
         self.print = print
-        self.index = len(Profiler.profilers)
+        self.index = len(Profile.profilers)
 
-        Profiler.profilers.append(self)
+        Profile.profilers.append(self)
 
     def __call__(self, *args, **kwargs) -> Any:
         """Profile the function and return its return value.
@@ -125,7 +126,7 @@ class Profiler:
         if not kwargs.pop("cond", True):
             return self.func(*args, **kwargs)
 
-        if not Profiler.running or self.index not in Profiler.selected:
+        if not Profile.running or self.index not in Profile.selected:
             return self.func(*args, **kwargs)
 
         with cProfile.Profile() as pr:
@@ -143,12 +144,12 @@ class Profiler:
             stats.dump_stats(path)
             print(f"Profile saved to {path}")
 
-        Profiler.selected.remove(self.index)
+        Profile.selected.remove(self.index)
         print(f"Profiler {self.name} at index {self.index} finished")
-        if not Profiler.selected:
-            Profiler.running = False
+        if not Profile.selected:
+            Profile.running = False
             print("All profilers finished")
 
         return ret
 
-__all__ = ["Profiler"]
+__all__ = ["Profile"]

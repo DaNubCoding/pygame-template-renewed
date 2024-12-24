@@ -63,7 +63,7 @@ class Game:
                 case pygame.K_F3:
                     Debug.toggle_visibility()
 
-        Profiler.update(self.key_down)
+        Profile.update(self.key_down)
 
     def change_scene(self, scene: Scene) -> None:
         self.scene = scene
