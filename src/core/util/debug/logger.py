@@ -24,7 +24,7 @@ class Log:
     @staticmethod
     @Debug.requires_debug("debug")
     def debug(message: str) -> None:
-        print(f"[DEBUG {Log.UNDERLINE}{Log.datetime()}{Log.ENDC}] {message}")
+        print(f"[{Log.OKBLUE}DEBUG{Log.ENDC} {Log.UNDERLINE}{Log.datetime()}{Log.ENDC}] {message}")
 
     @staticmethod
     @Debug.requires_debug("info")
