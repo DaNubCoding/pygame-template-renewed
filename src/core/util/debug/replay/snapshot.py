@@ -22,7 +22,7 @@ class Snapshot:
 
         self.gamestate = pickle.dumps(replayer.game.scene)
 
-        if Debug.is_debug("info", "snapshot-info"):
+        if Debug.is_debug("snapshot-info"):
             Log.info(f"Snapshot taken at timestamp {timestamp}.")
 
     def pickle_surface(self, surface: pygame.Surface) -> tuple[Callable, tuple]:
