@@ -30,3 +30,11 @@ class Scene(AbstractClass):
             self.sprite_manager.remove(sprite)
         except ValueError:
             Log.warn(f"Attempted to remove sprite {sprite} from scene {self}, but it was not found in the sprite manager.")
+
+    def __getstate__(self) -> dict:
+        state = self.__dict__.copy()
+        return state
+
+    def __setstate__(self, state: dict) -> None:
+        self.__dict__.update(state)
+        self.game = self.game.__class__()

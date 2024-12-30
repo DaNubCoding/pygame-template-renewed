@@ -1,7 +1,8 @@
 from pygame.locals import SCALED, FULLSCREEN, KEYDOWN, KEYUP, QUIT
+from src.core.util.timer import Time
 from src.core.scene import Scene
+import src.game.scenes as scenes
 from src.game.settings import *
-from src.game.scenes import *
 from src.core.util import *
 from typing import cast
 import pygame
@@ -14,19 +15,29 @@ class AbortGame(Exception):
     def __str__(self):
         return "Game aborted but not caught with a try/except block."
 
-class Game:
+class Game(metaclass=Singleton):
     def __init__(self) -> None:
         pygame.init()
         self.size = self.width, self.height = self.w, self.h = WIDTH, HEIGHT
         self.screen = pygame.display.set_mode(self.size, SCALED | FULLSCREEN * (not Debug.on()))
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
-
+        self.time = pygame.time.get_ticks() / 1000
         self.dt = self.clock.tick(0) / 1000
-        self.scene = MainScene(self)
+        self.fps = 0
+        self.timestamp = 0
+        self.replaying = False
 
     def run(self) -> None:
+        self.replayer = Replayer(self)
+        self.scene = scenes.MainScene(self)
+
         while True:
+            self.time = pygame.time.get_ticks() / 1000 - Debug._pause_time - Replayer._time
+            Time.begin_frame(self)
+            self.seed = time()
+            seed(self.seed)
+
             try:
                 self.update()
                 if not Debug.paused():
@@ -36,11 +47,17 @@ class Game:
             except AbortGame:
                 break
 
-            self.scene.draw(self.screen)
-            Debug.draw(self)
+            if not Debug.paused():
+                self.scene.draw(self.screen)
+                Debug.draw(self)
             pygame.display.flip()
 
+            if not self.replaying and not Debug.paused():
+                self.replayer.record()
             self.dt = self.clock.tick(0) / 1000
+            self.fps = self.clock.get_fps()
+            if not self.replaying and not Debug.paused():
+                self.timestamp += 1
 
         pygame.quit()
 
@@ -53,18 +70,37 @@ class Game:
         if KEYUP in self.events:
             self.key_up = cast(pygame.event.Event, self.events[KEYUP]).key
 
+        self.keys = pygame.key.get_pressed()
+        self.mouse_pos = Vec(pygame.mouse.get_pos())
+        self.mouse_pressed = pygame.mouse.get_pressed()
+
         if QUIT in self.events:
             raise AbortGame
 
         if KEYDOWN in self.events and Debug.on():
             match self.events[KEYDOWN].key:
                 case pygame.K_F1:
-                    Debug.toggle_paused()
+                    if not self.replaying:
+                        Debug.toggle_paused(self)
+                case pygame.K_F2:
+                    if not self.replaying:
+                        self.replayer.replay()
                 case pygame.K_F3:
                     Debug.toggle_visibility()
 
         Profile.update(self.key_down)
 
-    def change_scene(self, scene: Scene) -> None:
+    def new_scene(self, scene: str, *args: Any, **kwards: Any) -> None:
+        cls: Type[Scene] = getattr(scenes, scene)
+        self.scene = cls(self, *args, **kwards)
+        raise AbortScene
+
+    def set_scene(self, scene: Scene) -> None:
         self.scene = scene
         raise AbortScene
+
+    def __getstate__(self) -> dict:
+        return {}
+
+    def __setstate__(self, state: dict) -> None:
+        self.__dict__.update(Game().__dict__)

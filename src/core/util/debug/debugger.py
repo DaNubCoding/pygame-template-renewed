@@ -1,9 +1,12 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from src.core.game import Game
 
-from typing import Any, Callable
+from typing import Any, Callable, Optional
+from src.core.util.timer import Time
+from itertools import chain
 from functools import wraps
 import tomllib
 import pygame
@@ -67,7 +70,7 @@ class Debug:
     _conf_last_modified = None
 
     @staticmethod
-    def get_config_option(name: str) -> Any:
+    def get_config_option(name: str) -> Optional[Any]:
         try:
             last_modified = os.path.getmtime("debug.toml")
             # Only read the file if it has been modified since the last read
@@ -82,26 +85,32 @@ class Debug:
     @staticmethod
     def get_visibility(type: str) -> bool:
         try:
-            return Debug.get_config_option(type)
+            return bool(Debug.get_config_option(type))
         except KeyError:
             return False
 
-    @staticmethod
-    def get_setting(name: str) -> Any:
-        return Debug.get_config_option("settings")[name]
-
-    _debug_entries = {}
+    _debug_entries: Optional[dict[str, str]] = {}
     _debug_font = None
     _visible = True
     _paused = False
+    _pause_start = 0
+    _pause_time = 0
 
     @staticmethod
     def toggle_visibility() -> None:
         Debug._visible = not Debug._visible
 
     @staticmethod
-    def toggle_paused() -> None:
+    def toggle_paused(game: Game) -> None:
         Debug._paused = not Debug._paused
+        if Debug._paused:
+            Debug._pause_start = pygame.time.get_ticks() / 1000
+        else:
+            Debug._pause_time += pygame.time.get_ticks() / 1000 - Debug._pause_start
+            # Unfortunately we need to update this here as well or else for one
+            # frame the time will be off, causing issues with timers and such
+            game.time = pygame.time.get_ticks() / 1000 - Debug._pause_time
+            Time.begin_frame(game)
 
     @staticmethod
     def paused() -> bool:
@@ -116,13 +125,22 @@ class Debug:
         if Debug._debug_entries is None: return
 
         # Define locals
-        scene = game.scene
+        if game.replaying:
+            scene = game.scene.replay_scene # type: ignore
+        else:
+            scene = game.scene
 
         if Debug._debug_font is None:
             Debug._debug_font = pygame.font.SysFont("monospace", 16)
 
-        for i, (name, source) in enumerate(Debug._debug_entries.items()):
-            value = eval(source)
+        lines = chain([("fps", f"{game.fps:.1f}"),
+                       ("timestamp", f"{game.timestamp}")],
+                       Debug._debug_entries.items())
+        for i, (name, source) in enumerate(lines):
+            try:
+                value = eval(source)
+            except Exception as e:
+                value = f"ERROR: {e}"
             text = Debug._debug_font.render(f"{name}: {value}", True, (255, 255, 255), (0, 0, 0))
             text.set_alpha(150)
             game.screen.blit(text, (0, i * 19))

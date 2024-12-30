@@ -44,7 +44,7 @@ def get_layer() -> str:
         print("Invalid name. Must be in SCREAMING_SNAKE_CASE and follow Python's naming conventions.")
     return layer
 
-def create_sprite(name: str, superclass: str, scene: str, layer: str) -> None:
+def create_sprite(name: str, superclass: str, scene: str, layer: str) -> str:
     snake_name = re.sub(*SNAKE_REGEX_SUB, name).lower()
 
     sprite_path = os.path.join(SPRITES_PATH, f"{snake_name}.py")
@@ -61,8 +61,11 @@ def create_sprite(name: str, superclass: str, scene: str, layer: str) -> None:
     with open(INIT_PATH, "a") as init:
         init.write(f"from .{snake_name} import {name}\n")
 
+    return sprite_path
+
 def main() -> None:
-    create_sprite(get_name(), get_super(), get_scene(), get_layer())
+    path = create_sprite(get_name(), get_super(), get_scene(), get_layer())
+    print(f"Sprite created at {path}.")
 
 if __name__ == "__main__":
     main()

@@ -17,7 +17,7 @@ def get_name() -> str:
         print("Invalid name. Must be in PascalCase and follow Python's naming conventions.")
     return name
 
-def create_sprite(name: str) -> None:
+def create_sprite(name: str) -> str:
     snake_name = re.sub(*SNAKE_REGEX_SUB, name).lower()
 
     scene_path = os.path.join(SCENES_PATH, f"{snake_name}.py")
@@ -31,8 +31,11 @@ def create_sprite(name: str) -> None:
     with open(INIT_PATH, "a") as init:
         init.write(f"from .{snake_name} import {name}\n")
 
+    return scene_path
+
 def main() -> None:
-    create_sprite(get_name())
+    path = create_sprite(get_name())
+    print(f"Scene created at {path}.")
 
 if __name__ == "__main__":
     main()

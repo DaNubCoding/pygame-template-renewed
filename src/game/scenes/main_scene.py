@@ -14,4 +14,5 @@ class MainScene(Scene):
     def draw(self, screen: pygame.Surface) -> None:
         screen.fill((50, 50, 50))
         screen.blit(Images.test, (0, 0))
+        pygame.draw.circle(screen, (255, 0, 0), self.game.mouse_pos, 50)
         self.sprite_manager.draw(screen)

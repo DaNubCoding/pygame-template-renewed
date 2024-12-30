@@ -1,5 +1,22 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from src.core import Game
+
 from typing import Optional
-from time import time
+
+class Time:
+    _time = 0
+
+    @staticmethod
+    def begin_frame(game: Game) -> None:
+        Time._time = game.time
+
+    @staticmethod
+    def time() -> float:
+        return Time._time
+
+time = Time.time # Alias for convenience
 
 class Timer():
     """A timer class that lasts for a certain duration.
@@ -67,6 +84,10 @@ class Timer():
             self.resume()
         else:
             self.pause()
+
+    def force_end(self) -> None:
+        """Force the timer to end."""
+        self.time = time() - self.duration
 
     def __repr__(self) -> str:
         return f"Timer({self.duration})"
@@ -190,6 +211,8 @@ class PreciseLoopTimer(LoopTimer):
         return f"PreciseLoopTimer({self.duration})"
 
 __all__ = [
+    "Time",
+    "time",
     "Timer",
     "LoopTimer",
     "PreciseLoopTimer"

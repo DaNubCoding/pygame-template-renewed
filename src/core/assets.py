@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from src.core.util import pathof, StorageMeta
+from src.core.util import pathof, Storage
 import pygame
 
 def load_image(file: str, scale: int = 1) -> pygame.Surface:
     return pygame.transform.scale_by(pygame.image.load(pathof(f"res/images/{file}")).convert_alpha(), scale)
 
-class Images(metaclass=StorageMeta["Images", pygame.Surface]):
+class Images(metaclass=Storage["Images", pygame.Surface]):
     def __init__(self) -> None:
         self.test = load_image("test.png")
         self.player = load_image("player.png")

@@ -66,6 +66,17 @@ def inttup(tup: Coord) -> tuple:
     """
     return (floor(tup[0]), floor(tup[1]))
 
+def sign(x: float) -> int:
+    """Get the sign of a number.
+
+    Args:
+        x: The number to get the sign of.
+
+    Returns:
+        The sign of the number.
+    """
+    return (x > 0) - (x < 0)
+
 def iter_rect(left: int, right: int, top: int, bottom: int) -> Iterable[IntCoord]:
     """Iterate over the coordinates of a rectangle.
 
@@ -96,7 +107,16 @@ def iter_square(size: int) -> Iterable[IntCoord]:
 T = TypeVar("T")
 U = TypeVar("U")
 
-class StorageMeta(Generic[T, U], type):
+class Singleton(Generic[T], type):
+    """A metaclass that ensures a class is a singleton."""
+    _instance: Optional[T] = None
+
+    def __call__(cls: Singleton[T], *args: Any, **kwargs: Any) -> T:
+        if cls._instance is None:
+            cls._instance = super().__call__(*args, **kwargs)
+        return cast(T, cls._instance)
+
+class Storage(Generic[T, U], type):
     """A metaclass that ensures a class is a singleton and redirects class
     attribute access to the singleton instance. Effectively, this metaclass
     makes the class a storage for a bunch of attributes that can be more easily
@@ -104,12 +124,12 @@ class StorageMeta(Generic[T, U], type):
     """
     _instance: Optional[T] = None
 
-    def __call__(cls: StorageMeta[T, U], *args: Any, **kwargs: Any) -> T:
+    def __call__(cls: Storage[T, U], *args: Any, **kwargs: Any) -> T:
         if cls._instance is None:
             cls._instance = super().__call__(*args, **kwargs)
         return cast(T, cls._instance)
 
-    def __getattr__(cls: StorageMeta[T, U], name: str) -> U:
+    def __getattr__(cls: Storage[T, U], name: str) -> U:
         if cls._instance is None:
             cls._instance = cls()
         return getattr(cls._instance, name)
@@ -119,7 +139,9 @@ __all__ = [
     "ref_proxy",
     "read_file",
     "inttup",
+    "sign",
     "iter_rect",
     "iter_square",
-    "StorageMeta"
+    "Singleton",
+    "Storage",
 ]

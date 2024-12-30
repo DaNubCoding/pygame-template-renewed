@@ -33,3 +33,16 @@ class Sprite(AbstractClass):
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}{{{self.uuid}}}"
+
+    def __getstate__(self) -> dict:
+        state = self.__dict__.copy()
+        return state
+
+    def __setstate__(self, state: dict) -> None:
+        self.__dict__.update(state)
+        # Jesus Christ this is an ugly hack
+        # But uh, without this, when the sprite is unpickled, the game attr no
+        # longer points to the correct game instance, so we need to update it
+        # by retrieving the singleton instance accessed through the unpickled
+        # game instance, since we cannot import the Game class here
+        self.game = self.game.__class__()
