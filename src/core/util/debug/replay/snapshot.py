@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .replayer import Replayer
 
+from src.core.util.debug.debugger import Debug
 from src.core.util.debug.logger import Log
 from uuid import UUID, uuid4
 from typing import Callable
@@ -21,7 +22,8 @@ class Snapshot:
 
         self.gamestate = pickle.dumps(replayer.game.scene)
 
-        Log.info(f"Snapshot taken at timestamp {timestamp}.")
+        if Debug.is_debug("info", "snapshot-info"):
+            Log.info(f"Snapshot taken at timestamp {timestamp}.")
 
     def pickle_surface(self, surface: pygame.Surface) -> tuple[Callable, tuple]:
         uuid = uuid4()

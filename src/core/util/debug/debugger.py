@@ -37,7 +37,7 @@ class Debug:
         return Debug.get_visibility("debug")
 
     @staticmethod
-    def requires_debug(type: str = "debug") -> Callable[..., Any]:
+    def requires_debug(*types: str) -> Callable[..., Any]:
         """Any function decorated with this will only run if the given debug
         type is enabled in the debug.toml file.
 
@@ -56,15 +56,24 @@ class Debug:
             @Debug.requires_debug("warn")
             def my_function():
                 print("This will only run if the 'warn' type is enabled.")
+
+            @Debug.requires_debug("info", "custom_type")
+            def my_function():
+                print("This will only run if the 'info' and 'custom_type' types are both enabled.")
             ```
         """
+        types = types or ("debug",)
         def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
             @wraps(func)
             def wrapper(*args, **kwargs) -> Any:
-                if Debug.get_visibility(type):
+                if Debug.get_visibility(*types):
                     return func(*args, **kwargs)
             return wrapper
         return decorator
+
+    @staticmethod
+    def is_debug(*types: str) -> bool:
+        return Debug.get_visibility(*types)
 
     _conf_cache = None
     _conf_last_modified = None
@@ -83,9 +92,9 @@ class Debug:
             return None
 
     @staticmethod
-    def get_visibility(type: str) -> bool:
+    def get_visibility(*types: str) -> bool:
         try:
-            return bool(Debug.get_config_option(type))
+            return all(Debug.get_config_option(type) for type in types)
         except KeyError:
             return False
 
