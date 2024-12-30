@@ -59,6 +59,7 @@ class Replay(Scene):
     def step_forward(self) -> None:
         self.timestamp += 1
         if self.timestamp > self.game.replayer.newest_frame:
+            self.timestamp = self.game.replayer.newest_frame
             return
 
         frame = self.game.replayer.get_frame(self.timestamp)
@@ -74,11 +75,14 @@ class Replay(Scene):
 
     def seek_previous_snapshot(self) -> None:
         self.timestamp -= 1
-        while self.game.replayer.get_snapshot(self.timestamp) is None:
-            self.timestamp -= 1
-            if self.timestamp < 0:
-                self.timestamp = 0
-                break
+        try:
+            while self.game.replayer.get_snapshot(self.timestamp) is None:
+                self.timestamp -= 1
+                if self.timestamp < 0:
+                    self.timestamp = 0
+                    break
+        except KeyError:
+            self.timestamp = 0
         self.update_replay()
         self.paused = True
 
