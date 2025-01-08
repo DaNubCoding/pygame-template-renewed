@@ -134,8 +134,8 @@ class Debug:
         if Debug._debug_entries is None: return
 
         # Define locals
-        if game.replaying:
-            scene = game.scene.replay_scene # type: ignore
+        if game.replayer.running:
+            scene = game.replayer.scene
         else:
             scene = game.scene
 

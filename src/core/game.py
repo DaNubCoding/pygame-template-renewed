@@ -3,8 +3,8 @@ from src.core.util.timer import Time
 from src.core.scene import Scene
 import src.game.scenes as scenes
 from src.game.settings import *
+from typing import cast, Never
 from src.core.util import *
-from typing import cast
 import pygame
 
 class AbortScene(Exception):
@@ -26,14 +26,13 @@ class Game(metaclass=Singleton):
         self.dt = self.clock.tick(0) / 1000
         self.fps = 0
         self.timestamp = 0
-        self.replaying = False
 
     def run(self) -> None:
         self.replayer = Replayer(self)
         self.scene = scenes.MainScene(self)
 
         while True:
-            self.time = pygame.time.get_ticks() / 1000 - Debug._pause_time - Replayer._time
+            self.time = pygame.time.get_ticks() / 1000 - Debug._pause_time - self.replayer.time
             Time.begin_frame(self)
             self.seed = time()
             seed(self.seed)
@@ -52,11 +51,11 @@ class Game(metaclass=Singleton):
                 Debug.draw(self)
             pygame.display.flip()
 
-            if not self.replaying and not Debug.paused():
+            if not self.replayer.running and not Debug.paused():
                 self.replayer.record()
             self.dt = self.clock.tick(0) / 1000
             self.fps = self.clock.get_fps()
-            if not self.replaying and not Debug.paused():
+            if not self.replayer.running and not Debug.paused():
                 self.timestamp += 1
 
         pygame.quit()
@@ -80,22 +79,22 @@ class Game(metaclass=Singleton):
         if KEYDOWN in self.events and Debug.on():
             match self.events[KEYDOWN].key:
                 case pygame.K_F1:
-                    if not self.replaying:
+                    if not self.replayer.running:
                         Debug.toggle_paused(self)
                 case pygame.K_F2:
-                    if not self.replaying:
+                    if not self.replayer.running:
                         self.replayer.replay()
                 case pygame.K_F3:
                     Debug.toggle_visibility()
 
         Profile.update(self.key_down)
 
-    def new_scene(self, scene: str, *args: Any, **kwards: Any) -> None:
+    def new_scene(self, scene: str, *args: Any, **kwargs: Any) -> Never:
         cls: Type[Scene] = getattr(scenes, scene)
-        self.scene = cls(self, *args, **kwards)
+        self.scene = cls(self, *args, **kwargs)
         raise AbortScene
 
-    def set_scene(self, scene: Scene) -> None:
+    def set_scene(self, scene: Scene) -> Never:
         self.scene = scene
         raise AbortScene
 

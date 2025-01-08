@@ -4,7 +4,7 @@ from pygame.typing import (
     ColorLike as Color,
     RectLike as Rect,
 )
-from typing import Any, Self, Type, TypeVar, Optional, cast
+from typing import Any, Self, Type, TypeVar, Optional, cast, Never
 
 Number = int | float
 
@@ -20,4 +20,5 @@ __all__ = [
     "TypeVar",
     "Optional",
     "cast",
+    "Never",
 ]
