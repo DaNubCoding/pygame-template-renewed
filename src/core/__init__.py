@@ -1,7 +1,6 @@
 from src.game.settings import *
 
 from .sprite import Sprite
-from .assets import Images
 from .scene import Scene
 from .util import *
 import pygame

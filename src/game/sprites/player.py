@@ -4,7 +4,7 @@ class Player(Sprite):
     def __init__(self, scene: MainScene) -> None:
         super().__init__(scene, Layer.DEFAULT)
         self.pos = Vec(0, 0)
-        self.image = Images.player
+        self.image = Image.get("player")
         self.angle = 0
         self.timer = Timer(3)
 
@@ -16,5 +16,5 @@ class Player(Sprite):
             self.angle -= 90 * dt
 
     def draw(self, screen: pygame.Surface) -> None:
-        self.image = pygame.transform.rotate(Images.player, self.angle)
+        self.image = pygame.transform.rotate(Image.get("player"), self.angle)
         screen.blit(self.image, self.pos - Vec(self.image.size) / 2)

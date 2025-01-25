@@ -3,9 +3,9 @@ if TYPE_CHECKING:
     from src.core import Game
 
 from src.core.util.debug.debugger import Debug
+from src.core.util.general import ref_proxy
 from src.core.util.debug.logger import Log
 from src.core.util.timer import LoopTimer
-from src.core.util import ref_proxy
 from .snapshot import Snapshot
 from typing import Optional
 from .frame import Frame

@@ -4,6 +4,7 @@ from src.core.util.typing import *
 from pathlib import Path
 from math import floor
 import weakref
+import pygame
 import sys
 import os
 
@@ -15,6 +16,7 @@ BUNDLE_DIR = getattr(
 
 def pathof(file: str) -> str:
     """Gets the path to the given file that will work with exes.
+
     Args:
         file (str): The original path to go to
     Returns:
@@ -114,24 +116,6 @@ class Singleton(Generic[T], type):
             cls._instance = super().__call__(*args, **kwargs)
         return cast(T, cls._instance)
 
-class Storage(Generic[T, U], type):
-    """A metaclass that ensures a class is a singleton and redirects class
-    attribute access to the singleton instance. Effectively, this metaclass
-    makes the class a storage for a bunch of attributes that can be more easily
-    accessed without needing to manually instantiate the class.
-    """
-    _instance: Optional[T] = None
-
-    def __call__(cls: Storage[T, U], *args: Any, **kwargs: Any) -> T:
-        if cls._instance is None:
-            cls._instance = super().__call__(*args, **kwargs)
-        return cast(T, cls._instance)
-
-    def __getattr__(cls: Storage[T, U], name: str) -> U:
-        if cls._instance is None:
-            cls._instance = cls()
-        return getattr(cls._instance, name)
-
 __all__ = [
     "pathof",
     "ref_proxy",
@@ -141,5 +125,4 @@ __all__ = [
     "iter_rect",
     "iter_square",
     "Singleton",
-    "Storage",
 ]
