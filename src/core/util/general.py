@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import Iterable, TypeVar, cast, Optional, Any, Type, Generic
 from src.core.util.vector import Vec
 from src.core.util.typing import *

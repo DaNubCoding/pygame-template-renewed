@@ -1,18 +1,11 @@
-[tool.poetry]
-package-mode = false
+[project]
 name = "pygame-template-renewed"
-description = "Pygame template."
-authors = ["DaNubCoding <danubcoding@gmail.com>"]
-license = "GPL"
+version = "0.1.0"
+description = "Add your description here"
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.12"
-pygame-ce = "^2.5.2"
-multimethod = "^1.12"
-
-[tool.poe.tasks]
-run = "python main.py"
-new-scene = "python scripts/create_scene.py"
-new-sprite = "python scripts/create_sprite.py"
-init-debug = "python scripts/init_debug.py"
+requires-python = ">=3.13"
+dependencies = [
+    "moderngl>=5.12.0",
+    "multimethod>=2.0",
+    "pygame-ce>=2.5.2",
+]

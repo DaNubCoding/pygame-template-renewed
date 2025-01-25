@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from src.core.util import pathof, Storage
 import pygame
 
