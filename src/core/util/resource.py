@@ -66,7 +66,7 @@ class Image(Resource[pygame.Surface]):
     """An image resource."""
     DIR = "images"
 
-    scale: int = 1
+    scale: float = 1.0
 
     def load(self) -> pygame.Surface:
         surface = pygame.image.load(self.path).convert_alpha()
