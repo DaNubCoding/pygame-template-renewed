@@ -1,4 +1,3 @@
-from __future__ import annotations
 from src.core import *
 from src.game.sprites import *
 
