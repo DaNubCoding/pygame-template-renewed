@@ -1,11 +1,11 @@
 from pygame.locals import SCALED, FULLSCREEN, KEYDOWN, KEYUP, QUIT
+from src.game.resources import init_resources
 from src.core.util.resource import Resource
 from src.core.util.timer import Time
 from src.core.scene import Scene
 import src.game.scenes as scenes
 from src.game.settings import *
 from typing import cast, Never
-from src.game.assets import *
 from src.core.util import *
 import pygame
 
@@ -28,6 +28,8 @@ class Game(metaclass=Singleton):
         self.dt = self.clock.tick(0) / 1000
         self.fps = 0
         self.timestamp = 0
+
+        init_resources()
         Resource.preload()
 
     def run(self) -> None:
