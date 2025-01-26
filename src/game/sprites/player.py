@@ -2,7 +2,7 @@ from src.core import *
 
 class Player(Sprite):
     def __init__(self, scene: MainScene) -> None:
-        super().__init__(scene, Layer.DEFAULT)
+        super().__init__(scene, scene.Layer.DEFAULT)
         self.pos = Vec(0, 0)
         self.image = Image.get("player")
         self.angle = 0

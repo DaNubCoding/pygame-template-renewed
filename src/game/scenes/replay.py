@@ -2,6 +2,9 @@ from src.core import *
 from src.game.sprites import *
 
 class Replay(Scene):
+    class Layer(Enum):
+        pass
+
     def __init__(self, game: Game) -> None:
         super().__init__(game)
         self.previous_scene = game.scene

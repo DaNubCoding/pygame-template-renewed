@@ -9,9 +9,16 @@ from src.core.util import *
 import pygame
 
 class Scene(AbstractClass):
+    def __init_subclass__(cls, **kwargs) -> None:
+        super().__init_subclass__(**kwargs)
+        if "Layer" not in cls.__dict__:
+            raise AttributeError(f"Scene subclass {cls.__name__} must have a 'Layer' enum.")
+
+    Layer: Type[Enum]
+
     def __init__(self, game: Game) -> None:
         self.game = ref_proxy(game)
-        self.sprite_manager = SpriteManager()
+        self.sprite_manager = SpriteManager(self)
 
     @abstractmethod
     def update(self, dt: float) -> None:

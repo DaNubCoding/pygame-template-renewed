@@ -2,6 +2,9 @@ from src.core import *
 from src.game.sprites import *
 
 class MainScene(Scene):
+    class Layer(Enum):
+        DEFAULT = auto()
+
     def __init__(self, game: Game) -> None:
         super().__init__(game)
         self.player = Player(self)
