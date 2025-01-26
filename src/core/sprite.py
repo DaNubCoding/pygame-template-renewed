@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from src.game.settings import Layer
     from src.core.scene import Scene
 
 from abc import ABC as AbstractClass, abstractmethod
@@ -10,7 +9,7 @@ from uuid import uuid4
 import pygame
 
 class Sprite(AbstractClass):
-    def __init__(self, scene: Scene, layer: Layer) -> None:
+    def __init__(self, scene: Scene, layer: Enum) -> None:
         self.uuid = uuid4()
         self.game = ref_proxy(scene.game)
         self.scene = ref_proxy(scene)
