@@ -153,10 +153,16 @@ class LoopTimer(Timer):
         self._loops = 0
 
     def pause(self) -> None:
+        """Pause the timer. If the timer is at the maximum number of loops,
+        this method does nothing.
+        """
         if self._loops >= self.max_loops >= 0: return
         super().pause()
 
     def resume(self) -> None:
+        """Resume the timer. If the timer is at the maximum number of loops,
+        this method does nothing.
+        """
         if self._loops >= self.max_loops >= 0: return
         super().resume()
 
